@@ -1,0 +1,7 @@
+1)
+Training Error for (p = 3 )is: 0.013223140495867768
+Testing Error for (p= 3 )is: 0.04221635883905013
+Training Error for (p = 4 )is: 0.0013774104683195593
+Testing Error for (p= 4 )is: 0.022427440633245383
+Training Error for (p = 5 )is: 0.0002754820936639118
+Testing Error for (p= 5 )is: 0.0633245382585752

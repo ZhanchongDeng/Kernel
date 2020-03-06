@@ -28,6 +28,24 @@ def kernel(s, t, p):
             product += map_s[key_s] * map_t[key_s]
     return product
 
+def kernel2(s, t, p):
+    common = 0
+    # Record all substring
+    all_sub_string_s = []
+    all_sub_string_t = []
+    for i in range(len(s) - p + 1):
+        all_sub_string_s.append(s[i:i+p])
+    for j in range(len(t) - p + 1):
+        all_sub_string_t.append(t[i:i+p])
+    # Generate uniques
+    unique_s = np.unique(np.array(all_sub_string_s))
+    unique_t = np.unique(np.array(all_sub_string_t))
+    for key_s in unique_s:
+        if key_s in unique_t:
+            common += 1
+    return common
+    
+
 def generate_map(string, p):
     all_sub_string = []
     for i in range(len(string) - p + 1):
@@ -72,7 +90,7 @@ class Perceptron():
         dot_product = 0
         for err_idx in self.delta_idx:
             error_data = self.training_data[err_idx]
-            dot_product += error_data[1] * kernel(error_data[0], x[0], self.p)
+            dot_product += error_data[1] * kernel2(error_data[0], x[0], self.p)
         return dot_product
     
     '''
