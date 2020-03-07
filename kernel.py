@@ -28,45 +28,42 @@ def kernel(s, t, p):
             product += map_s[key_s] * map_t[key_s]
     return product
 
+def generate_map(string, p):
+    uniques = {}
+    for i in range(len(string) - p + 1):
+        if string[i:i+p] not in uniques.keys():
+            uniques[string[i:i+p]] = 1
+        else:
+            uniques[string[i:i+p]] += 1
+    return uniques
+
 def kernel2(s, t, p):
     common = 0
-    # Record all substring
-    all_sub_string_s = []
-    all_sub_string_t = []
+    # Record uniques
+    unique_s = []
+    unique_t = []
     for i in range(len(s) - p + 1):
-        all_sub_string_s.append(s[i:i+p])
+        unique_s.append(s[i:i+p])
     for j in range(len(t) - p + 1):
-        all_sub_string_t.append(t[i:i+p])
-    # Generate uniques
-    unique_s = np.unique(np.array(all_sub_string_s))
-    unique_t = np.unique(np.array(all_sub_string_t))
+        unique_t.append(t[i:i+p])
+    unique_s = set(unique_s)
+    unique_t = set(unique_t)
     for key_s in unique_s:
         if key_s in unique_t:
             common += 1
     return common
-    
-
-def generate_map(string, p):
-    all_sub_string = []
-    for i in range(len(string) - p + 1):
-        all_sub_string.append(string[i:i+p])
-    uniques = np.unique(ar = np.array(all_sub_string), return_counts = True)
-    return dict(zip(uniques[0], uniques[1]))
 
 
 class Perceptron():
     # Instead of w, keep track of index of x, y that made errors
-    delta_idx = []
-    training_data = []
+    delta = []
     # store p as a instance
     p = -1
     
     def fit(self, training_data, p):
         self.p = p
-        self.training_data = training_data
         # One pass only
         count = 0
-        batch = 1
         switch = True
         for i in range(len(training_data)):
             # progress report
@@ -75,22 +72,23 @@ class Perceptron():
                 switch = False
             count += 1
             data = training_data[i]
+            # Edge case:
+            if len(self.delta) == 0:
+                self.delta.append(data)
+                continue
             # Update case:
             if data[1] * self.w_dot_phi(data) <= 0:
-                self.delta_idx.append(i)
+                self.delta.append(data)
+        print("All done")
             
     '''
     Helper method which calculates <w_t, phi(x)>
     '''
     def w_dot_phi(self, x):
-        # Edge case: initial when it's empty
-        if len(self.delta_idx) == 0:
-            return 0
         # Iterate through all x in list, compute sum of kernals
         dot_product = 0
-        for err_idx in self.delta_idx:
-            error_data = self.training_data[err_idx]
-            dot_product += error_data[1] * kernel2(error_data[0], x[0], self.p)
+        for error_data in self.delta:
+            dot_product += error_data[1] * kernel(error_data[0], x[0], self.p)
         return dot_product
     
     '''
